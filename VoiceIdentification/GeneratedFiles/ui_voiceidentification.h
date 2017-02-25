@@ -84,6 +84,7 @@ public:
         timeEdit = new QTimeEdit(centralWidget);
         timeEdit->setObjectName(QStringLiteral("timeEdit"));
         timeEdit->setGeometry(QRect(190, 150, 118, 22));
+        timeEdit->setAcceptDrops(false);
         timeEdit->setFrame(false);
         timeEdit->setAlignment(Qt::AlignCenter);
         timeEdit->setButtonSymbols(QAbstractSpinBox::NoButtons);
@@ -115,7 +116,7 @@ public:
         stopRecordButton->setText(QApplication::translate("VoiceIdentificationClass", "\320\236\321\201\321\202\320\260\320\275\320\276\320\262\320\270\321\202\321\214 \320\267\320\260\320\277\320\270\321\201\321\214", Q_NULLPTR));
         playButton->setText(QApplication::translate("VoiceIdentificationClass", "\320\222\320\276\321\201\320\277\321\200\320\276\320\270\320\267\320\262\320\265\321\201\321\202\320\270", Q_NULLPTR));
         pauseButton->setText(QApplication::translate("VoiceIdentificationClass", "\320\237\320\260\321\203\320\267\320\260", Q_NULLPTR));
-        timeEdit->setDisplayFormat(QApplication::translate("VoiceIdentificationClass", "mm:ss.zz", Q_NULLPTR));
+        timeEdit->setDisplayFormat(QApplication::translate("VoiceIdentificationClass", "mm:ss.z", Q_NULLPTR));
     } // retranslateUi
 
 };

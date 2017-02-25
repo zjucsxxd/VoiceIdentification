@@ -4,6 +4,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QMediaPlayer>
 #include <QTimer>
+#include <QTime>
 #include <QMessageBox>
 #include "ui_voiceidentification.h"
 #include "voicerecord.hpp"
@@ -25,10 +26,12 @@ private slots:
 	void onTimeout();
 
 private:
-	Ui::VoiceIdentificationClass ui;
+	Ui::VoiceIdentificationClass *ui;
 	VoiceRecord *voiceRecord;
 	QMediaPlayer *mediaPlayer;
 	QTimer *timer;
+	QTime time;
+	QTime nullTime;
 };
 
 #endif // VOICEIDENTIFICATION_H
