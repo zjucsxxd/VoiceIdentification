@@ -7,13 +7,15 @@ VoiceRecord::VoiceRecord(QObject * parent) : QObject(parent) {
 	QAudioEncoderSettings audioSettings;
 	audioSettings.setCodec("audio/PCM");
 	audioSettings.setQuality(QMultimedia::HighQuality);
+	audioSettings.setChannelCount(1);
+	audioSettings.setSampleRate(44100);
+	audioSettings.setBitRate(16);
 	audioRecorder->setEncodingSettings(audioSettings);
 
 	//  set destination  //
-	//audioRecorder->setOutputLocation(QUrl::fromLocalFile("D:/sample.wav"));
 	audioRecorder->setOutputLocation(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));
-	//audioRecorder->setOutputLocation(QDir::current()("sample.wav"));
 }
+
 
 VoiceRecord::~VoiceRecord() {
 	delete audioRecorder;

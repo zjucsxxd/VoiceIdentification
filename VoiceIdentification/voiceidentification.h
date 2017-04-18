@@ -22,6 +22,7 @@ private slots:
 	void RecordSlot();
 	void StopRecordSlot();
 	void PlaySlot();
+	void LoadSlot();
 	void PauseSlot();
 	void onTimeout();
 

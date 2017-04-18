@@ -3,7 +3,7 @@
 VoiceIdentification::VoiceIdentification(QWidget *parent)
 	: QMainWindow(parent)
 {
-	nullTime.setHMS(0,0,0,0);
+	nullTime.setHMS(0, 0, 0, 0);
 	ui->setupUi(this);
 	voiceRecord = new VoiceRecord();
 	timer = new QTimer();
@@ -11,7 +11,8 @@ VoiceIdentification::VoiceIdentification(QWidget *parent)
 	connect(ui->startRecordButton, SIGNAL(clicked()), this, SLOT(RecordSlot()));
 	connect(ui->stopRecordButton, SIGNAL(clicked()), this, SLOT(StopRecordSlot()));
 	connect(ui->playButton, SIGNAL(clicked()), this, SLOT(PlaySlot()));
-	connect(ui->pauseButton, SIGNAL(clicked()), this, SLOT(PauseSlot()));	
+	connect(ui->loadButton, SIGNAL(clicked()), this, SLOT(LoadSlot()));
+	connect(ui->pauseButton, SIGNAL(clicked()), this, SLOT(PauseSlot()));
 }
 
 VoiceIdentification::~VoiceIdentification()
@@ -33,23 +34,28 @@ void VoiceIdentification::StopRecordSlot()
 	timer->stop();
 }
 
-void VoiceIdentification::PlaySlot()
+void VoiceIdentification::LoadSlot()
 {
-	ui->timeEdit->setTime(nullTime);
 	mediaPlayer = new QMediaPlayer(this);
 	mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));
-	mediaPlayer->play();
+}
+
+void VoiceIdentification::PlaySlot()
+{
+	ui->timeEdit->setTime(nullTime);	
+	mediaPlayer->play();	
 	timer->start(1);
 }
 
 void VoiceIdentification::PauseSlot()
 {
-	mediaPlayer->stop();
+	mediaPlayer->stop();	
 	timer->stop();
+	mediaPlayer->setMedia(QMediaContent());
 }
 
 void VoiceIdentification::onTimeout()
-{	
+{
 	time = ui->timeEdit->time().addMSecs(1);
 	ui->timeEdit->setTime(time);
 }
