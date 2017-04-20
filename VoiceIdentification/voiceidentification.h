@@ -8,6 +8,8 @@
 #include <QMessageBox>
 #include "ui_voiceidentification.h"
 #include "voicerecord.hpp"
+#include "datareader.hpp"
+
 
 class VoiceIdentification : public QMainWindow
 {

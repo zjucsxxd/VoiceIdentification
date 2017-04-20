@@ -36,8 +36,11 @@ void VoiceIdentification::StopRecordSlot()
 
 void VoiceIdentification::LoadSlot()
 {
-	mediaPlayer = new QMediaPlayer(this);
-	mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));
+	//mediaPlayer = new QMediaPlayer(this);
+	//mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));
+
+	DataReader d_reader = new DataReader();
+	d_reader.ReadWavData();
 }
 
 void VoiceIdentification::PlaySlot()

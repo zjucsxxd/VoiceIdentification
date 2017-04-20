@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include <QObject>
+#include <QUrl>
+#include <QDir>
+#include <QMessageBox>
 
 class DataReader : public QObject {
 	Q_OBJECT
@@ -7,6 +10,8 @@ class DataReader : public QObject {
 public:
 	DataReader(QObject * parent = Q_NULLPTR);
 	~DataReader();
+	void ReadWavData();
+
 
 private:
 	

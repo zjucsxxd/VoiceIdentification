@@ -47,7 +47,7 @@ public:
     {
         if (VoiceIdentificationClass->objectName().isEmpty())
             VoiceIdentificationClass->setObjectName(QStringLiteral("VoiceIdentificationClass"));
-        VoiceIdentificationClass->resize(539, 265);
+        VoiceIdentificationClass->resize(539, 269);
         centralWidget = new QWidget(VoiceIdentificationClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         horizontalLayoutWidget = new QWidget(centralWidget);

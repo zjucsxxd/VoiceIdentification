@@ -59,6 +59,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_voicerecord.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="datareader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_datareader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_datareader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="voiceidentification.h">
@@ -71,6 +80,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="voicerecord.hpp">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="datareader.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
