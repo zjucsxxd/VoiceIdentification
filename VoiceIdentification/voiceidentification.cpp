@@ -1,4 +1,5 @@
 #include "voiceidentification.h"
+#include "dataprocess.hpp"
 
 VoiceIdentification::VoiceIdentification(QWidget *parent)
 	: QMainWindow(parent)
@@ -37,22 +38,27 @@ void VoiceIdentification::StopRecordSlot()
 void VoiceIdentification::LoadSlot()
 {
 	//mediaPlayer = new QMediaPlayer(this);
-	//mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));
-
-	DataReader d_reader = new DataReader();
-	d_reader.ReadWavData();
+	//mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));	
+	DataReader dReader = new DataReader();
+	std::complex<double> *signal1 = dReader.ReadWavData("template.wav");
+	int length1 = dReader.GetLength();
+	std::complex<double> *signal2 = dReader.ReadWavData("sample.wav");
+	int length2 = dReader.GetLength();
+	DataProcess dataProcess = new DataProcess();
+	dataProcess.Calculate(signal1, signal2, length1, length2);
+	
 }
 
 void VoiceIdentification::PlaySlot()
 {
-	ui->timeEdit->setTime(nullTime);	
-	mediaPlayer->play();	
+	ui->timeEdit->setTime(nullTime);
+	mediaPlayer->play();
 	timer->start(1);
 }
 
 void VoiceIdentification::PauseSlot()
 {
-	mediaPlayer->stop();	
+	mediaPlayer->stop();
 	timer->stop();
 	mediaPlayer->setMedia(QMediaContent());
 }

@@ -1,4 +1,5 @@
 ﻿#include "datareader.hpp"
+#include "dataprocess.hpp"
 
 struct wav_header_t
 {
@@ -13,8 +14,6 @@ struct wav_header_t
 	unsigned long byteRate;
 	unsigned short blockAlign;
 	unsigned short bitsPerSample;
-	//[WORD wExtraFormatBytes;]
-	//[Extra format bytes]
 };
 
 struct chunk_t
@@ -24,17 +23,16 @@ struct chunk_t
 };
 
 DataReader::DataReader(QObject * parent) : QObject(parent) {
-	
+
 }
 
 DataReader::~DataReader() {
-	
+
 }
 
-void DataReader::ReadWavData()
+std::complex<double> *DataReader::ReadWavData(char *fileName)
 {
-	
-	FILE *fin = fopen("sample.wav", "rb");
+	FILE *fin = fopen(fileName, "rb");
 
 	//Read WAV header
 	wav_header_t header;
@@ -45,7 +43,6 @@ void DataReader::ReadWavData()
 	while (true)
 	{
 		fread(&chunk, sizeof(chunk), 1, fin);
-		printf("%c%c%c%c\t" "%li\n", chunk.ID[0], chunk.ID[1], chunk.ID[2], chunk.ID[3], chunk.size);
 		if (*(unsigned int *)&chunk.ID == 0x61746164)
 			break;
 		//skip chunk data bytes
@@ -54,37 +51,75 @@ void DataReader::ReadWavData()
 
 	//Number of samples
 
-	int sample_size = header.bitsPerSample / 8;
-	int samples_count = chunk.size * 8 / header.bitsPerSample;
-	printf("Samples count = %i\n", samples_count);
+	int sampleSize = header.bitsPerSample / 8;
+	int samplesCount = chunk.size * 8 / header.bitsPerSample;
+	_lenght = samplesCount / 2;
 
-	int *left = new int[samples_count / 2];			// левый канал
-	memset(left, 0, sizeof(int) * samples_count / 2);
+	short *left = new short[samplesCount / 2];			// левый канал
+	memset(left, 0, sizeof(short) * samplesCount / 2);
 
-	int *right = new int[samples_count / 2];		// правый канал
-	memset(right, 0, sizeof(int) * samples_count / 2);
+	short *right = new short[samplesCount / 2];		// правый канал
+	memset(right, 0, sizeof(short) * samplesCount / 2);
 
 	//Reading data
-	for (int i = 0; i < samples_count; i++)
+	for (int i = 0; i < samplesCount; i++)
 	{
-		fread(&left[i], sample_size, 1, fin);
-		fread(&right[i], sample_size, 1, fin);
+		fread(&left[i], sampleSize, 1, fin);
+		fread(&right[i], sampleSize, 1, fin);
 	}
+	fclose(fin);
 
 	//Write data into the file
+	FILE *fout = fopen("signal.txt", "w");
 	FILE *foutL = fopen("left.txt", "w");
 	FILE *foutR = fopen("right.txt", "w");
-	for (int i = 0; i < samples_count / 2; i++)
+	FILE *fComplex = fopen("complex.txt", "w");
+
+	for (int i = 0; i < samplesCount / 2; i++)
 	{
 		fprintf(foutL, "%d\n", left[i]);
 		fprintf(foutR, "%d\n", right[i]);
+		fprintf(fout, "%d\n", left[i]);
+		fprintf(fout, "%d\n", right[i]);
 	}
-	fclose(fin);
 	fclose(foutL);
+	fclose(fout);
 	fclose(foutR);
 
+	//write complex 
+	std::complex<double> *signal = new std::complex<double>[samplesCount / 2];
+	for (int i = 0; i < samplesCount / 2; i++)
+	{
+		signal[i] = { (double)left[i],(double)right[i] };
+		fprintf(fComplex, "%f%+fi\n", real(signal[i]), imag(signal[i]));
+	}
+
+	DataProcess dp = new DataProcess();
+	double norm = dp.Norm(signal, samplesCount / 2);
+
+	fprintf(fComplex, "%f\n", norm);
+	fclose(fComplex);
+
 	QMessageBox msgBox;
-	QString q = "Done";
+	QString q = "Norm: " + QString::number(norm);
 	msgBox.setText(q);
 	msgBox.exec();
+
+	return signal;
+}
+
+int DataReader::GetLength()
+{
+	return _lenght;
+}
+
+uint DataReader::BitToInt(QBitArray buf)
+{
+	uint value = 0;
+	for (uint j = 0; j < buf.size(); j++)
+	{
+		value <<= 1;
+		value += (int)buf.at(j);
+	}
+	return value;
 }

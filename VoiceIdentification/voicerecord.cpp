@@ -6,7 +6,6 @@ VoiceRecord::VoiceRecord(QObject * parent) : QObject(parent) {
 	//  configure recorder  //
 	QAudioEncoderSettings audioSettings;
 	audioSettings.setCodec("audio/PCM");
-	//audioSettings.setQuality(QMultimedia::HighQuality);
 	audioSettings.setChannelCount(2);
 	audioSettings.setSampleRate(44100);
 	audioSettings.setBitRate(16);

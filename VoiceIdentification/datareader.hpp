@@ -3,6 +3,8 @@
 #include <QUrl>
 #include <QDir>
 #include <QMessageBox>
+#include <QBitArray>
+#include <complex>
 
 class DataReader : public QObject {
 	Q_OBJECT
@@ -10,9 +12,11 @@ class DataReader : public QObject {
 public:
 	DataReader(QObject * parent = Q_NULLPTR);
 	~DataReader();
-	void ReadWavData();
+	std::complex<double> *ReadWavData(char *fileName);
+	int GetLength();
 
 
 private:
-	
+	static uint BitToInt(QBitArray buf);
+	int _lenght;
 };
