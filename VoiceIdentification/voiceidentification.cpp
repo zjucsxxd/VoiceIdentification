@@ -1,6 +1,8 @@
 #include "voiceidentification.h"
 #include "dataprocess.hpp"
 
+#define Count 10
+
 VoiceIdentification::VoiceIdentification(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -11,14 +13,11 @@ VoiceIdentification::VoiceIdentification(QWidget *parent)
 	connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 	connect(ui->startRecordButton, SIGNAL(clicked()), this, SLOT(RecordSlot()));
 	connect(ui->stopRecordButton, SIGNAL(clicked()), this, SLOT(StopRecordSlot()));
-	connect(ui->playButton, SIGNAL(clicked()), this, SLOT(PlaySlot()));
 	connect(ui->loadButton, SIGNAL(clicked()), this, SLOT(LoadSlot()));
-	connect(ui->pauseButton, SIGNAL(clicked()), this, SLOT(PauseSlot()));
 }
 
 VoiceIdentification::~VoiceIdentification()
 {
-	delete mediaPlayer;
 	delete voiceRecord;
 }
 
@@ -37,30 +36,48 @@ void VoiceIdentification::StopRecordSlot()
 
 void VoiceIdentification::LoadSlot()
 {
-	//mediaPlayer = new QMediaPlayer(this);
-	//mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + "/sample.wav"));	
 	DataReader dReader = new DataReader();
-	std::complex<double> *signal1 = dReader.ReadWavData("template.wav");
-	int length1 = dReader.GetLength();
-	std::complex<double> *signal2 = dReader.ReadWavData("sample.wav");
-	int length2 = dReader.GetLength();
 	DataProcess dataProcess = new DataProcess();
-	dataProcess.Calculate(signal1, signal2, length1, length2);
-	
-}
+	FILE *fout = fopen("result.txt", "w");
+	std::complex<double> *signal[Count];
+	std::complex<double> *spectr[Count];
+	std::complex<double> *input = dReader.ReadWavData("t1.wav");
+	int l = dReader.GetLength();
+	std::complex<double> *inputSpectr = dataProcess.Fft(input, l);
+	int length[Count];
+	bool done = false;
+	/*
+	for (int i = 0; i < Count; i++)
+	{
+		std::string name = "t" + std::to_string(i + 1) + ".wav";
+		signal[i] = dReader.ReadWavData(&name[0u]);
+		length[i] = dReader.GetLength();
+		spectr[i] = dataProcess.Fft(signal[i], length[i]);
 
-void VoiceIdentification::PlaySlot()
-{
-	ui->timeEdit->setTime(nullTime);
-	mediaPlayer->play();
-	timer->start(1);
-}
+		double result = dataProcess.Calculate(inputSpectr, spectr[i], 5000, 5000);
+		fprintf(fout, "%d : %f\n", i, result);
+		if (result > 0.8)
+		{
+			QMessageBox msgBox;
+			QString q = "Authentication complete! " + QString::number(i);
+			msgBox.setText(q);
+			msgBox.exec();
+			done = true;
+			break;
+		}		
+	}
+	if (!done)
+	{
+		QMessageBox msgBox;
+		QString q = "Authentication failed!";
+		msgBox.setText(q);
+		msgBox.exec();
+	}
+	*/
+	//delete length;
+	//delete inputSpectr;
 
-void VoiceIdentification::PauseSlot()
-{
-	mediaPlayer->stop();
-	timer->stop();
-	mediaPlayer->setMedia(QMediaContent());
+	fclose(fout);
 }
 
 void VoiceIdentification::onTimeout()
